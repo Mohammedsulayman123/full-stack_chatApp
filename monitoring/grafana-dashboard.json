@@ -1,0 +1,91 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [],
+  "liveNow": true,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
+      "id": 1,
+      "title": "Active WebSocket Clients",
+      "type": "stat",
+      "targets": [
+        { "expr": "chat_active_socket_connections", "legendFormat": "Connected Users", "refId": "A" }
+      ],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto"
+      }
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
+      "id": 2,
+      "title": "Database Connection Health",
+      "type": "stat",
+      "targets": [
+        { "expr": "chat_database_connected", "legendFormat": "MongoDB ReadyState", "refId": "A" }
+      ],
+      "options": {
+        "colorMode": "background",
+        "reduceOptions": { "values": false, "calcs": ["lastNotNull"] }
+      }
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 0 },
+      "id": 3,
+      "title": "HTTP Requests Rate",
+      "type": "stat",
+      "targets": [
+        { "expr": "rate(chat_http_requests_total[1m])", "legendFormat": "req/sec", "refId": "A" }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 0 },
+      "id": 4,
+      "title": "Backend Uptime (Hours)",
+      "type": "stat",
+      "targets": [
+        { "expr": "nodejs_process_uptime_seconds / 3600", "legendFormat": "Uptime (hrs)", "refId": "A" }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
+      "id": 5,
+      "title": "Real-Time WebSocket Connections History",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "chat_active_socket_connections", "legendFormat": "Active Sockets", "refId": "A" }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
+      "id": 6,
+      "title": "Node.js Heap Memory Allocation",
+      "type": "timeseries",
+      "targets": [
+        { "expr": "nodejs_heap_used_bytes / 1024 / 1024", "legendFormat": "Heap Used (MB)", "refId": "A" },
+        { "expr": "nodejs_heap_total_bytes / 1024 / 1024", "legendFormat": "Heap Total (MB)", "refId": "B" },
+        { "expr": "nodejs_rss_bytes / 1024 / 1024", "legendFormat": "RSS (MB)", "refId": "C" }
+      ]
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "tags": ["chat-app", "kubernetes", "observability", "prometheus"],
+  "time": { "from": "now-30m", "to": "now" },
+  "timepicker": { "refresh_intervals": ["5s", "10s", "30s", "1m"] },
+  "timezone": "browser",
+  "title": "Three-Tier Chat K8s Platform - Observability Dashboard",
+  "version": 1
+}

@@ -10,6 +10,7 @@ import { connectDB } from "./lib/db.js";
 import authRoutes from "./routes/auth.route.js";
 import messageRoutes from "./routes/message.route.js";
 import healthRoutes from "./routes/health.route.js";
+import metricsRoutes, { metricsCollectorMiddleware } from "./routes/metrics.route.js";
 import { app, server } from "./lib/socket.js";
 
 // Load environment variables from .env file
@@ -29,9 +30,12 @@ app.use(
   })
 );
 
+app.use(metricsCollectorMiddleware);
+
 app.use("/api/auth", authRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/health", healthRoutes);
+app.use("/metrics", metricsRoutes);
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));

@@ -1,0 +1,41 @@
+groups:
+  - name: chatapp_alerts
+    rules:
+      - alert: ChatBackendDown
+        expr: up{job="chat-backend"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          tier: backend
+        annotations:
+          summary: "Chat application backend instance is down"
+          description: "Backend pod/instance {{ $labels.instance }} has been unreachable for more than 1 minute. SLA 99.9% compromised."
+
+      - alert: DatabaseDisconnected
+        expr: chat_database_connected == 0
+        for: 30s
+        labels:
+          severity: critical
+          tier: database
+        annotations:
+          summary: "MongoDB disconnected from chat backend"
+          description: "MongoDB connection state is 0. Chat persistence and authentication are currently impaired."
+
+      - alert: HighMemoryUsage
+        expr: nodejs_heap_used_bytes / nodejs_heap_total_bytes > 0.85
+        for: 2m
+        labels:
+          severity: warning
+          tier: backend
+        annotations:
+          summary: "High memory utilization in chat backend"
+          description: "Node.js heap usage exceeds 85% for more than 2 minutes."
+
+      - alert: SpikeInSocketConnections
+        expr: delta(chat_active_socket_connections[5m]) > 500
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Abnormal surge in WebSocket connections"
+          description: "Active real-time socket connections increased by over 500 in 5 minutes."

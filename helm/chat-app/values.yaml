@@ -1,0 +1,84 @@
+global:
+  namespace: chat-app
+  environment: production
+
+frontend:
+  replicaCount: 2
+  image:
+    repository: sulayman12/chatapp-frontend
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 80
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      cpu: 250m
+      memory: 256Mi
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 70
+
+backend:
+  replicaCount: 2
+  image:
+    repository: sulayman12/chatapp-backend
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 5001
+  env:
+    port: 5001
+    nodeEnv: production
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 75
+    targetMemoryUtilizationPercentage: 80
+  monitoring:
+    enabled: true
+    path: /metrics
+    port: 5001
+
+mongodb:
+  enabled: true
+  image:
+    repository: mongo
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    port: 27017
+  auth:
+    rootUsername: mongoadmin
+    rootPassword: secretpassword
+    database: chatapp
+  persistence:
+    enabled: true
+    size: 1Gi
+    storageClass: standard
+    accessMode: ReadWriteOnce
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+  host: chat-tws.com
+
+secrets:
+  jwtSecret: "super_secret_jwt_key_production"
