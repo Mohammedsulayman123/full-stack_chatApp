@@ -34,11 +34,46 @@
 
 Below is the **live animated pipeline flow** depicting automated commits, webhook triggers, Jenkins build stages, smoke test health checks, Docker container image pushes, and Kubernetes rolling pod deployments.
 
-> **💡 Live Moving Dots**: The animated glowing nodes and data packets represent active telemetry streaming across each DevOps lifecycle stage.
+> **💡 Live Moving Dots**: The animated glowing nodes and streaming dashed wires represent active telemetry streaming across each DevOps lifecycle stage.
 
 <div align="center">
-  <img src="assets/devops-pipeline.svg" alt="DevOps CI/CD Moving Dot Pipeline" width="100%" />
+  <img src="https://raw.githubusercontent.com/Mohammedsulayman123/full-stack_chatApp/main/assets/devops-pipeline.svg?sanitize=true" alt="DevOps CI/CD Moving Dot Pipeline" width="100%" />
 </div>
+
+```mermaid
+flowchart LR
+    subgraph DEV["💻 Developer Environment"]
+        A["Local Code"] -->|"git commit & push"| B["Branch: master"]
+    end
+
+    subgraph VCS["🐙 Version Control"]
+        B -->|"Webhook Trigger"| C["GitHub Repository"]
+    end
+
+    subgraph CI["⚙️ Jenkins CI/CD Automation"]
+        C --> D["1. Checkout Source"]
+        D --> E["2. Smoke Test (/health)"]
+        E --> F["3. Docker Multi-Stage Build"]
+    end
+
+    subgraph REG["🐳 Container Registry"]
+        F -->|"Push Tag: latest"| G["Docker Hub"]
+    end
+
+    subgraph K8S["☸️ Kubernetes Cluster (chat-app)"]
+        G -->|"Rolling Update"| H["Nginx Ingress (chat-tws.com)"]
+        H -->|"Path: /"| I["Frontend Pod (React + Nginx)"]
+        H -->|"Path: /api"| J["Backend Pod (Node + Socket.io)"]
+        J -->|"mongodb-service:27017"| K[("MongoDB (PVC Persistent)")]
+    end
+
+    classDef dev fill:#1e293b,stroke:#38bdf8,stroke-width:2px,color:#fff;
+    classDef ci fill:#1e293b,stroke:#fbbf24,stroke-width:2px,color:#fff;
+    classDef k8s fill:#0f172a,stroke:#34d399,stroke-width:2px,color:#fff;
+    class DEV,VCS dev;
+    class CI,REG ci;
+    class K8S,I,J,K k8s;
+```
 
 <p align="center">
   🎮 <strong>Want an interactive simulation?</strong> Open the standalone <a href="docs/live-pipeline-visualizer.html"><strong>Live Pipeline Visualizer Dashboard (HTML)</strong></a> to pause/play packet delivery, trigger simulated Jenkins builds, inspect pod states, and stream real-time cluster telemetry logs in your browser!
@@ -51,8 +86,39 @@ Below is the **live animated pipeline flow** depicting automated commits, webhoo
 The diagram below illustrates the end-to-end runtime architecture: dual client WebSocket synchronization, Nginx reverse proxy load-balancing, Express REST API controllers, MongoDB persistence, and Cloudinary media CDN.
 
 <div align="center">
-  <img src="assets/architecture-diagram.svg" alt="Real-Time Application Architecture Diagram" width="100%" />
+  <img src="https://raw.githubusercontent.com/Mohammedsulayman123/full-stack_chatApp/main/assets/architecture-diagram.svg?sanitize=true" alt="Real-Time Application Architecture Diagram" width="100%" />
 </div>
+
+```mermaid
+flowchart TD
+    subgraph CLIENTS["📱 Client Tier (React 18 + Vite + DaisyUI)"]
+        A["Client A (Alice)"]
+        B["Client B (Bob)"]
+    end
+
+    subgraph INGRESS["🛡️ Ingress & Proxy Tier"]
+        NG["Nginx Reverse Proxy / Port 80"]
+    end
+
+    subgraph BACKEND["⚡ Application Tier (Port 5001)"]
+        AUTH["Auth Controller (JWT)"]
+        SOCK["Socket.io Cluster Engine (userSocketMap)"]
+        MSG["Message Controller"]
+    end
+
+    subgraph DATA["💾 Persistence & Media CDN"]
+        DB[("MongoDB (Users & Messages)")]
+        CDN["Cloudinary CDN (Avatars & Media)"]
+    end
+
+    A <-->|"WebSocket Event Stream"| NG
+    B <-->|"WebSocket Event Stream"| NG
+    NG <--> SOCK
+    A -->|"REST HTTP /api/auth"| NG --> AUTH
+    AUTH --> DB
+    SOCK --> MSG --> DB
+    AUTH --> CDN
+```
 
 ### 🔄 How Real-Time Data Flows:
 1. **Connection &amp; Presence**: Upon client sign-in, the browser establishes a persistent WebSocket connection via Socket.io with the client's `userId`. The backend `userSocketMap` maintains online status and broadcasts `getOnlineUsers` to all active clients.

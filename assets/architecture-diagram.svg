@@ -1,99 +1,137 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 560" width="100%" height="100%" style="background:#090d16; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; border-radius:12px; box-shadow:0 20px 40px rgba(0,0,0,0.6);">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 560" width="100%" height="auto">
   <defs>
     <!-- Background Grid -->
     <pattern id="archGrid" width="30" height="30" patternUnits="userSpaceOnUse">
       <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#1e293b" stroke-width="0.5" stroke-opacity="0.6"/>
     </pattern>
 
-    <!-- Gradients -->
-    <linearGradient id="neonCyan" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="100%" stop-color="#0284c7"/>
-    </linearGradient>
-
-    <linearGradient id="neonGreen" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#4ade80"/>
-      <stop offset="100%" stop-color="#16a34a"/>
-    </linearGradient>
-
-    <linearGradient id="neonPurple" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#c084fc"/>
-      <stop offset="100%" stop-color="#9333ea"/>
-    </linearGradient>
-
-    <linearGradient id="neonAmber" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#fcd34d"/>
-      <stop offset="100%" stop-color="#d97706"/>
-    </linearGradient>
-
     <linearGradient id="cardDark" x1="0%" y1="0%" x2="0%" y2="100%">
       <stop offset="0%" stop-color="#1e293b" stop-opacity="0.9"/>
       <stop offset="100%" stop-color="#0f172a" stop-opacity="0.95"/>
     </linearGradient>
 
-    <!-- Filters -->
-    <filter id="glow-c" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="3.5" result="blur" />
-      <feMerge>
-        <feMergeNode in="blur" />
-        <feMergeNode in="SourceGraphic" />
-      </feMerge>
-    </filter>
-
-    <filter id="glow-g" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="3.5" result="blur" />
-      <feMerge>
-        <feMergeNode in="blur" />
-        <feMergeNode in="SourceGraphic" />
-      </feMerge>
-    </filter>
-
     <style>
-      .hdr { font-size: 20px; font-weight: 800; fill: #f8fafc; }
-      .subhdr { font-size: 12px; font-weight: 500; fill: #94a3b8; }
-      .c-title { font-size: 14px; font-weight: 700; fill: #f1f5f9; }
-      .c-sub { font-size: 11px; fill: #94a3b8; }
-      .tag { font-size: 9.5px; font-family: monospace; font-weight: 600; }
-      .wire { stroke: #334155; stroke-width: 2; fill: none; }
-      .wire-dash { stroke: #334155; stroke-width: 2; stroke-dasharray: 4,4; fill: none; }
-      .pulse-beacon { animation: radar 3s infinite ease-out; transform-origin: center; }
-      @keyframes radar {
-        0% { r: 6px; opacity: 1; }
-        70% { r: 18px; opacity: 0; }
-        100% { r: 6px; opacity: 0; }
+      .hdr { font-size: 20px; font-weight: 800; fill: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+      .subhdr { font-size: 12px; font-weight: 500; fill: #94a3b8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+      .c-title { font-size: 14px; font-weight: 700; fill: #f1f5f9; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+      .c-sub { font-size: 11px; fill: #94a3b8; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+      .tag { font-size: 9.5px; font-family: 'SFMono-Regular', Consolas, monospace; font-weight: 600; }
+
+      /* GitHub Sanitizer Safe Flow Animation */
+      @keyframes dashFlow {
+        from { stroke-dashoffset: 24; }
+        to { stroke-dashoffset: 0; }
       }
+
+      @keyframes pulseLight {
+        0% { opacity: 0.3; }
+        50% { opacity: 1; }
+        100% { opacity: 0.3; }
+      }
+
+      @keyframes moveAliceToNginx {
+        0% { transform: translate(0px, 0px); opacity: 0; }
+        20% { opacity: 1; }
+        80% { opacity: 1; }
+        100% { transform: translate(180px, 80px); opacity: 0; }
+      }
+
+      @keyframes moveNginxToBackend {
+        0% { transform: translate(0px, 0px); opacity: 0; }
+        20% { opacity: 1; }
+        80% { opacity: 1; }
+        100% { transform: translate(90px, 0px); opacity: 0; }
+      }
+
+      @keyframes moveBackendToBob {
+        0% { transform: translate(0px, 0px); opacity: 0; }
+        20% { opacity: 1; }
+        80% { opacity: 1; }
+        100% { transform: translate(-180px, 130px); opacity: 0; }
+      }
+
+      @keyframes moveBackendToDB {
+        0% { transform: translate(0px, 0px); opacity: 0; }
+        20% { opacity: 1; }
+        80% { opacity: 1; }
+        100% { transform: translate(170px, -60px); opacity: 0; }
+      }
+
+      .flow-green-line { stroke: #4ade80; stroke-width: 2.5; stroke-dasharray: 6 6; animation: dashFlow 1.2s linear infinite; fill: none; }
+      .flow-purple-line { stroke: #c084fc; stroke-width: 2.5; stroke-dasharray: 6 6; animation: dashFlow 1.2s linear infinite; fill: none; }
+      .flow-cyan-line { stroke: #38bdf8; stroke-width: 2.5; stroke-dasharray: 6 6; animation: dashFlow 1.2s linear infinite; fill: none; }
+
+      .p-alice { animation: moveAliceToNginx 2.2s linear infinite; }
+      .p-ng-be { animation: moveNginxToBackend 1.2s linear 0.7s infinite; }
+      .p-be-bob { animation: moveBackendToBob 2.2s linear 1.4s infinite; }
+      .p-be-db { animation: moveBackendToDB 1.8s linear 1s infinite; }
+
+      .beacon-arch { animation: pulseLight 2s ease-in-out infinite; }
     </style>
   </defs>
 
-  <rect width="1280" height="560" fill="#090d16" />
+  <rect width="1280" height="560" rx="12" fill="#090d16" stroke="#1e293b" stroke-width="1.5" />
   <rect width="1280" height="560" fill="url(#archGrid)" />
 
   <!-- Header -->
   <g transform="translate(45, 45)">
-    <circle cx="12" cy="12" r="10" fill="#4ade80" fill-opacity="0.2"/>
-    <circle cx="12" cy="12" r="5" fill="#4ade80" filter="url(#glow-g)"/>
+    <circle cx="12" cy="12" r="10" fill="#4ade80" class="beacon-arch"/>
+    <circle cx="12" cy="12" r="5" fill="#ffffff"/>
     <text x="36" y="16" class="hdr">Real-Time Application Architecture &amp; Data Pipeline</text>
     <text x="36" y="34" class="subhdr">Bi-Directional WebSocket Streaming &bull; REST API Microservices &bull; MongoDB Persistence &bull; Cloudinary Media</text>
   </g>
 
-  <!-- ================= STATIC BUS WIRES ================= -->
+  <!-- ================= STATIC & FLOWING PATHS ================= -->
   <!-- Client A to Nginx -->
-  <path d="M 200 170 C 270 170, 310 240, 380 250" class="wire-dash" />
+  <path d="M 200 170 C 270 170, 310 240, 380 250" class="flow-green-line" />
   <!-- Client B to Nginx -->
-  <path d="M 200 410 C 270 410, 310 320, 380 300" class="wire-dash" />
+  <path d="M 200 410 C 270 410, 310 320, 380 300" class="flow-purple-line" />
 
   <!-- Nginx to Express Backend -->
-  <path d="M 490 275 L 580 275" class="wire-dash" />
+  <path d="M 490 275 L 580 275" class="flow-green-line" />
 
   <!-- Express to MongoDB -->
-  <path d="M 850 240 C 930 240, 950 180, 1020 180" class="wire-dash" />
+  <path d="M 850 240 C 930 240, 950 180, 1020 180" class="flow-green-line" />
 
   <!-- Express to Cloudinary -->
-  <path d="M 850 310 C 930 310, 950 380, 1020 380" class="wire-dash" />
+  <path d="M 850 310 C 930 310, 950 380, 1020 380" class="flow-cyan-line" />
 
-  <!-- Direct Peer WebSocket Return Loop (Nginx to Clients) -->
-  <path d="M 380 280 C 290 280, 260 210, 200 190" class="wire-dash" stroke="#4ade80" stroke-opacity="0.4"/>
-  <path d="M 380 295 C 290 295, 260 380, 200 430" class="wire-dash" stroke="#4ade80" stroke-opacity="0.4"/>
+  <!-- Direct Peer WebSocket Return Loop (Nginx to Bob) -->
+  <path d="M 380 295 C 290 295, 260 380, 200 430" class="flow-green-line" />
+
+
+  <!-- ================= MOVING DOTS ================= -->
+  <!-- Alice to Nginx -->
+  <g transform="translate(200, 170)">
+    <g class="p-alice">
+      <circle cx="0" cy="0" r="5" fill="#4ade80" />
+      <circle cx="0" cy="0" r="2.5" fill="#ffffff" />
+    </g>
+  </g>
+
+  <!-- Nginx to Backend -->
+  <g transform="translate(490, 275)">
+    <g class="p-ng-be">
+      <circle cx="0" cy="0" r="5" fill="#4ade80" />
+      <circle cx="0" cy="0" r="2.5" fill="#ffffff" />
+    </g>
+  </g>
+
+  <!-- Return Broadcast to Bob -->
+  <g transform="translate(380, 295)">
+    <g class="p-be-bob">
+      <circle cx="0" cy="0" r="5" fill="#4ade80" />
+      <circle cx="0" cy="0" r="2.5" fill="#ffffff" />
+    </g>
+  </g>
+
+  <!-- Backend to MongoDB -->
+  <g transform="translate(850, 240)">
+    <g class="p-be-db">
+      <circle cx="0" cy="0" r="4.5" fill="#10b981" />
+      <circle cx="0" cy="0" r="2" fill="#ffffff" />
+    </g>
+  </g>
 
 
   <!-- ================= CLIENT TIER ================= -->
@@ -123,7 +161,6 @@
     <text x="75" y="105" text-anchor="middle" fill="#c084fc" class="tag">Socket.io-client</text>
   </g>
 
-
   <!-- ================= PROXY / INGRESS TIER ================= -->
   <g transform="translate(380, 205)">
     <rect width="110" height="140" rx="12" fill="url(#cardDark)" stroke="#10b981" stroke-width="1.5"/>
@@ -137,19 +174,17 @@
     <text x="55" y="128" text-anchor="middle" fill="#a7f3d0" font-size="8.5px" font-weight="700">WS UPGRADE</text>
   </g>
 
-
-  <!-- ================= APPLICATION TIER (NODE + SOCKET.IO) ================= -->
+  <!-- ================= APPLICATION TIER ================= -->
   <g transform="translate(580, 145)">
-    <!-- Container Box -->
     <rect width="270" height="260" rx="16" fill="url(#cardDark)" stroke="#3b82f6" stroke-width="1.5"/>
     <rect x="0" y="0" width="270" height="38" rx="16" fill="#1e293b" fill-opacity="0.8"/>
     <path d="M 0 38 L 270 38" stroke="#334155" stroke-width="1"/>
     
-    <circle cx="22" cy="19" r="6" fill="#3b82f6" filter="url(#glow-c)"/>
+    <circle cx="22" cy="19" r="5" fill="#3b82f6" class="beacon-arch"/>
     <text x="36" y="23" font-size="13px" font-weight="700" fill="#f8fafc">Node.js Express &amp; Socket.io</text>
     <text x="210" y="23" font-size="10px" font-family="monospace" fill="#38bdf8">PORT: 5001</text>
 
-    <!-- Sub Module 1: Auth & Middleware -->
+    <!-- Sub Module 1 -->
     <g transform="translate(18, 50)">
       <rect width="234" height="48" rx="8" fill="#0f172a" stroke="#334155"/>
       <circle cx="16" cy="24" r="5" fill="#38bdf8"/>
@@ -157,16 +192,16 @@
       <text x="30" y="36" font-size="9.5px" fill="#94a3b8">HTTP-only cookie &bull; bcrypt password hash</text>
     </g>
 
-    <!-- Sub Module 2: Socket Server (Heart) -->
+    <!-- Sub Module 2 -->
     <g transform="translate(18, 108)">
       <rect width="234" height="60" rx="8" fill="#0f172a" stroke="#4ade80" stroke-width="1.2"/>
-      <circle cx="16" cy="24" r="5" fill="#4ade80" filter="url(#glow-g)"/>
+      <circle cx="16" cy="24" r="5" fill="#4ade80" class="beacon-arch"/>
       <text x="30" y="22" font-size="11px" font-weight="700" fill="#4ade80">Socket.io Engine</text>
       <text x="30" y="36" font-size="9.5px" fill="#cbd5e1">userSocketMap: { userId &rarr; socketId }</text>
       <text x="30" y="49" font-size="9px" fill="#94a3b8">getOnlineUsers &bull; newMessage emit</text>
     </g>
 
-    <!-- Sub Module 3: Message & Storage Router -->
+    <!-- Sub Module 3 -->
     <g transform="translate(18, 178)">
       <rect width="234" height="48" rx="8" fill="#0f172a" stroke="#334155"/>
       <circle cx="16" cy="24" r="5" fill="#fbbf24"/>
@@ -177,9 +212,8 @@
     <text x="135" y="246" text-anchor="middle" font-size="9px" fill="#64748b">Clustered in Docker / Kubernetes Pod with Liveness Probe</text>
   </g>
 
-
   <!-- ================= DATABASE & STORAGE TIER ================= -->
-  <!-- MongoDB Node -->
+  <!-- MongoDB -->
   <g transform="translate(1020, 115)">
     <rect width="210" height="135" rx="12" fill="url(#cardDark)" stroke="#10b981" stroke-width="1.5"/>
     <circle cx="32" cy="32" r="14" fill="#10b981" fill-opacity="0.15"/>
@@ -192,7 +226,7 @@
     <text x="105" y="112" text-anchor="middle" fill="#10b981" class="tag">K8s PVC: mongodb-pvc</text>
   </g>
 
-  <!-- Cloudinary Storage Node -->
+  <!-- Cloudinary -->
   <g transform="translate(1020, 315)">
     <rect width="210" height="135" rx="12" fill="url(#cardDark)" stroke="#38bdf8" stroke-width="1.5"/>
     <circle cx="32" cy="32" r="14" fill="#38bdf8" fill-opacity="0.15"/>
@@ -205,56 +239,9 @@
     <text x="105" y="114" text-anchor="middle" fill="#38bdf8" class="tag">Secure Cloud API</text>
   </g>
 
-
-  <!-- ================= ANIMATED MOVING DOTS (DATA PACKETS) ================= -->
-  <!-- 1. Alice Sends Message (Green Glowing Packet traveling: Alice -> Nginx -> Express) -->
-  <circle r="4.5" fill="#4ade80" filter="url(#glow-g)">
-    <animateMotion dur="2.4s" repeatCount="indefinite" path="M 200 170 C 270 170, 310 240, 380 250" />
-  </circle>
-  <circle r="2.5" fill="#ffffff">
-    <animateMotion dur="2.4s" repeatCount="indefinite" path="M 200 170 C 270 170, 310 240, 380 250" />
-  </circle>
-
-  <!-- 2. Nginx to Express Core -->
-  <circle r="4.5" fill="#4ade80" filter="url(#glow-g)">
-    <animateMotion dur="1.2s" begin="0.8s" repeatCount="indefinite" path="M 490 275 L 580 275" />
-  </circle>
-
-  <!-- 3. Express writes message to MongoDB -->
-  <circle r="4" fill="#10b981" filter="url(#glow-g)">
-    <animateMotion dur="1.8s" begin="1.4s" repeatCount="indefinite" path="M 850 240 C 930 240, 950 180, 1020 180" />
-  </circle>
-
-  <!-- 4. Express uploads avatar/image to Cloudinary -->
-  <circle r="4" fill="#38bdf8" filter="url(#glow-c)">
-    <animateMotion dur="2s" begin="0.5s" repeatCount="indefinite" path="M 850 310 C 930 310, 950 380, 1020 380" />
-  </circle>
-
-  <!-- 5. Socket.io broadcasts new message to Bob (Return Path: Nginx -> Bob) -->
-  <circle r="4.5" fill="#4ade80" filter="url(#glow-g)">
-    <animateMotion dur="2.4s" begin="1.6s" repeatCount="indefinite" path="M 380 295 C 290 295, 260 380, 200 430" />
-  </circle>
-  <circle r="2.5" fill="#ffffff">
-    <animateMotion dur="2.4s" begin="1.6s" repeatCount="indefinite" path="M 380 295 C 290 295, 260 380, 200 430" />
-  </circle>
-
-  <!-- 6. Bob Acknowledges / Typings (Purple Packet from Bob -> Nginx -> Alice) -->
-  <circle r="4" fill="#c084fc" filter="url(#glow-c)">
-    <animateMotion dur="2.5s" begin="2s" repeatCount="indefinite" path="M 200 410 C 270 410, 310 320, 380 300" />
-  </circle>
-  <circle r="4" fill="#c084fc" filter="url(#glow-c)">
-    <animateMotion dur="2.5s" begin="3s" repeatCount="indefinite" path="M 380 280 C 290 280, 260 210, 200 190" />
-  </circle>
-
-  <!-- Pulse Beacons -->
-  <circle cx="125" cy="170" r="8" fill="none" stroke="#38bdf8" stroke-width="1.5" class="pulse-beacon"/>
-  <circle cx="125" cy="410" r="8" fill="none" stroke="#c084fc" stroke-width="1.5" class="pulse-beacon"/>
-  <circle cx="715" cy="275" r="8" fill="none" stroke="#4ade80" stroke-width="1.5" class="pulse-beacon"/>
-  <circle cx="1125" cy="180" r="8" fill="none" stroke="#10b981" stroke-width="1.5" class="pulse-beacon"/>
-
   <!-- Footer Legend -->
   <g transform="translate(60, 520)">
-    <circle cx="0" cy="0" r="4.5" fill="#4ade80" filter="url(#glow-g)"/>
+    <circle cx="0" cy="0" r="4.5" fill="#4ade80" />
     <text x="12" y="4" font-size="11px" fill="#94a3b8">Real-Time WebSocket Message Stream (Instant Delivery)</text>
     
     <circle cx="360" cy="0" r="4.5" fill="#c084fc"/>
