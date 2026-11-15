@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real-Time Chat App &bull; DevOps Pipeline &amp; Architecture Visualizer</title>
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: rgba(22, 30, 49, 0.75);
+      --card-border: #2a374f;
+      --cyan: #38bdf8;
+      --green: #34d399;
+      --amber: #fbbf24;
+      --purple: #c084fc;
+      --red: #f87171;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Header Bar */
+    header {
+      background: rgba(13, 19, 33, 0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 16px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .brand-title {
+      font-size: 17px;
+      font-weight: 800;
+      letter-spacing: -0.4px;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: var(--text-main);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      background: #334155;
+      border-color: var(--cyan);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      border-color: #38bdf8;
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #0369a1, #1d4ed8);
+    }
+
+    .btn-emerald {
+      background: rgba(5, 150, 105, 0.2);
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    .btn-emerald:hover {
+      background: rgba(5, 150, 105, 0.4);
+      box-shadow: 0 0 12px rgba(52, 211, 153, 0.3);
+    }
+
+    /* Main Container */
+    main {
+      flex: 1;
+      padding: 24px 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 1440px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* Grid layout */
+    .view-grid {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 20px;
+    }
+
+    @media (max-width: 1024px) {
+      .view-grid { grid-template-columns: 1fr; }
+    }
+
+    .canvas-container {
+      background: #0c1220;
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 20px;
+      position: relative;
+      box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--cyan);
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .tab {
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      background: #131b2e;
+      border: 1px solid #1e293b;
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+
+    .tab.active {
+      background: #1e293b;
+      border-color: var(--cyan);
+      color: #fff;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+    }
+
+    /* Sidebar info panel */
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 12px;
+    }
+
+    .metric-row:last-child { border-bottom: none; }
+    .metric-val {
+      font-family: monospace;
+      font-weight: 700;
+      color: var(--green);
+    }
+
+    /* Terminal Console */
+    .console {
+      background: #050811;
+      border: 1px solid #1a2333;
+      border-radius: 8px;
+      padding: 12px;
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+      font-size: 11px;
+      height: 220px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .log-line {
+      line-height: 1.4;
+      word-break: break-all;
+    }
+
+    .log-time { color: #64748b; margin-right: 6px; }
+    .log-jenkins { color: var(--amber); }
+    .log-k8s { color: var(--cyan); }
+    .log-socket { color: var(--green); }
+    .log-auth { color: var(--purple); }
+
+    /* Moving Dot Canvas / SVG styling */
+    .diagram-wrapper {
+      width: 100%;
+      height: 480px;
+      position: relative;
+    }
+
+    .diagram-wrapper svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Interactive Tooltip */
+    #tooltip {
+      position: absolute;
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid var(--cyan);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: #fff;
+      font-size: 11px;
+      pointer-events: none;
+      display: none;
+      z-index: 100;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand">
+      <div class="logo-badge">💬</div>
+      <div>
+        <div class="brand-title">Full-Stack Real-Time Chat App &bull; DevOps Architecture</div>
+        <div class="brand-sub">Live Moving-Dot Pipeline &amp; Cluster Telemetry Simulator</div>
+      </div>
+    </div>
+    <div class="controls">
+      <button class="btn btn-emerald" id="btn-msg" onclick="triggerMessage()">
+        <span>⚡</span> Simulate Realtime Message
+      </button>
+      <button class="btn btn-primary" id="btn-deploy" onclick="triggerDeployment()">
+        <span>🚀</span> Trigger CI/CD Pipeline
+      </button>
+      <button class="btn" id="btn-toggle" onclick="togglePlay()">
+        <span id="play-icon">⏸️</span> <span id="play-text">Pause</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('devops', this)">DevOps CI/CD &amp; K8s Deployment Pipeline</div>
+      <div class="tab" onclick="switchTab('runtime', this)">Runtime WebSocket &amp; Data Pipeline</div>
+    </div>
+
+    <div class="view-grid">
+      <!-- Main Visualizer Canvas -->
+      <div class="canvas-container">
+        <div class="section-title">
+          <span id="diagram-heading">DevOps CI/CD Automation Pipeline</span>
+          <span style="font-size: 11px; color: var(--text-muted); font-family: monospace;">STATUS: <span style="color:var(--green)">RUNNING &bull; LIVE</span></span>
+        </div>
+
+        <div class="diagram-wrapper" id="diagram-container">
+          <!-- Injected SVG Diagram will render here -->
+        </div>
+      </div>
+
+      <!-- Live Telemetry & Inspector Sidebar -->
+      <div class="sidebar">
+        <!-- Cluster Status Card -->
+        <div class="card">
+          <div class="section-title" style="margin-bottom: 8px;">Cluster &amp; Service Health</div>
+          <div class="metric-row">
+            <span>Kubernetes Namespace</span>
+            <span class="metric-val" style="color: var(--cyan)">chat-app</span>
+          </div>
+          <div class="metric-row">
+            <span>Ingress Domain</span>
+            <span class="metric-val" style="color: #cbd5e1">chat-tws.com</span>
+          </div>
+          <div class="metric-row">
+            <span>Backend Pods</span>
+            <span class="metric-val">1/1 RUNNING (Healthy)</span>
+          </div>
+          <div class="metric-row">
+            <span>Frontend Pods (Nginx)</span>
+            <span class="metric-val">1/1 RUNNING (Port 80)</span>
+          </div>
+          <div class="metric-row">
+            <span>Database Status</span>
+            <span class="metric-val">Connected (mongodb-service)</span>
+          </div>
+          <div class="metric-row">
+            <span>Socket.io Engine</span>
+            <span class="metric-val" id="active-sockets">12 Connected Users</span>
+          </div>
+        </div>
+
+        <!-- Live DevOps & Event Logs -->
+        <div class="card" style="flex: 1; display: flex; flex-direction: column;">
+          <div class="section-title" style="margin-bottom: 8px;">
+            <span>Live Telemetry Stream</span>
+            <span style="font-size: 9px; cursor: pointer; color: var(--text-muted);" onclick="clearLogs()">CLEAR</span>
+          </div>
+          <div class="console" id="log-console"></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="tooltip"></div>
+
+  <script>
+    let isPlaying = true;
+    let activeTab = 'devops';
+
+    const logsContainer = document.getElementById('log-console');
+
+    function log(category, msg) {
+      const now = new Date();
+      const timeStr = now.toTimeString().split(' ')[0] + '.' + String(now.getMilliseconds()).padStart(3, '0');
+      const div = document.createElement('div');
+      div.className = 'log-line';
+
+      let catClass = 'log-k8s';
+      if (category === 'JENKINS') catClass = 'log-jenkins';
+      else if (category === 'SOCKET.IO') catClass = 'log-socket';
+      else if (category === 'AUTH') catClass = 'log-auth';
+
+      div.innerHTML = `<span class="log-time">[${timeStr}]</span> <strong class="${catClass}">[${category}]</strong> ${msg}`;
+      logsContainer.appendChild(div);
+      logsContainer.scrollTop = logsContainer.scrollHeight;
+
+      if (logsContainer.children.length > 50) {
+        logsContainer.removeChild(logsContainer.firstChild);
+      }
+    }
+
+    function clearLogs() {
+      logsContainer.innerHTML = '';
+      log('SYSTEM', 'Log buffer cleared.');
+    }
+
+    // Initial logs
+    log('SYSTEM', 'Initializing DevOps & Application Architecture Visualizer...');
+    log('K8S', 'Connected to Kubernetes Cluster (namespace: chat-app)');
+    log('JENKINS', 'Pipeline webhook active on branch master');
+    log('SOCKET.IO', 'Socket server listening on port 5001');
+    log('HEALTH', 'Liveness probe GET /health responded HTTP 200 OK');
+
+    // Load SVG Diagram
+    function loadDiagram(type) {
+      const container = document.getElementById('diagram-container');
+      const filename = type === 'devops' ? '../assets/devops-pipeline.svg' : '../assets/architecture-diagram.svg';
+      
+      fetch(filename)
+        .then(r => r.text())
+        .then(svgText => {
+          container.innerHTML = svgText;
+          setupInteractivity();
+        })
+        .catch(err => {
+          container.innerHTML = `<iframe src="${filename}" style="width:100%; height:100%; border:none;"></iframe>`;
+        });
+    }
+
+    function switchTab(type, el) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      activeTab = type;
+      document.getElementById('diagram-heading').innerText = 
+        type === 'devops' ? 'DevOps CI/CD Automation Pipeline' : 'Runtime Application Architecture & WebSocket Flow';
+      loadDiagram(type);
+      log('SYSTEM', `Switched view mode to: ${type.toUpperCase()}`);
+    }
+
+    function togglePlay() {
+      isPlaying = !isPlaying;
+      document.getElementById('play-icon').innerText = isPlaying ? '⏸️' : '▶️';
+      document.getElementById('play-text').innerText = isPlaying ? 'Pause' : 'Resume';
+      
+      const svg = document.querySelector('#diagram-container svg');
+      if (svg) {
+        if (isPlaying) {
+          svg.unpauseAnimations ? svg.unpauseAnimations() : null;
+        } else {
+          svg.pauseAnimations ? svg.pauseAnimations() : null;
+        }
+      }
+      log('SYSTEM', `Simulation ${isPlaying ? 'Resumed' : 'Paused'}`);
+    }
+
+    function triggerDeployment() {
+      log('JENKINS', '🚀 Triggered build #104 by manual dispatch on git branch master');
+      setTimeout(() => log('JENKINS', 'Stage Checkout: Cloned https://github.com/iemafzalhassan/full-stack_chatApp.git (revision 7c2a1e)'), 600);
+      setTimeout(() => log('JENKINS', 'Stage Test: Executing curl -f http://localhost:5001/health & http://localhost/ -> PASS (0.012s)'), 1400);
+      setTimeout(() => log('JENKINS', 'Stage Docker Build: Building multi-stage alpine images -> SUCCESS'), 2300);
+      setTimeout(() => log('K8S', 'Rolling update triggered: sulayman12/chatapp-backend:latest deployed to Pod chatapp-backend-6d9b4f'), 3200);
+      setTimeout(() => log('HEALTH', 'Healthcheck passed: database: connected, environment: production'), 4000);
+    }
+
+    function triggerMessage() {
+      const users = ['Alice', 'Bob', 'Charlie', 'Dana'];
+      const sender = users[Math.floor(Math.random() * users.length)];
+      let receiver = users[Math.floor(Math.random() * users.length)];
+      while (receiver === sender) receiver = users[Math.floor(Math.random() * users.length)];
+
+      log('SOCKET.IO', `Message sent from [${sender}] to [${receiver}]: "Hey there! Realtime socket sync works!"`);
+      setTimeout(() => log('MONGO', `Stored message payload into mongodb:chatapp.messages collection`), 350);
+      setTimeout(() => log('SOCKET.IO', `Event 'newMessage' emitted to socket ID usr_${receiver.toLowerCase()}_992`), 700);
+    }
+
+    // Periodic simulation pulses
+    setInterval(() => {
+      if (!isPlaying) return;
+      const r = Math.random();
+      if (r < 0.3) {
+        log('HEALTH', 'Periodic probe GET /health -> status: healthy, db: connected');
+      } else if (r < 0.6) {
+        log('SOCKET.IO', `Heartbeat ping-pong acknowledged by ${Math.floor(Math.random() * 5 + 10)} active clients`);
+      }
+    }, 6000);
+
+    function setupInteractivity() {
+      // Optional interactive node hover handlers
+    }
+
+    // Initial load
+    loadDiagram('devops');
+  </script>
+</body>
+</html>
