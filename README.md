@@ -37,7 +37,7 @@ Below is the **live animated pipeline flow** depicting automated commits, webhoo
 > **💡 Live Moving Dots**: The animated glowing nodes and streaming dashed wires represent active telemetry streaming across each DevOps lifecycle stage.
 
 <div align="center">
-  <img src="https://cdn.jsdelivr.net/gh/Mohammedsulayman123/full-stack_chatApp@main/assets/devops-pipeline.svg" alt="DevOps CI/CD Moving Dot Pipeline" width="100%" />
+  <img src="assets/devops-pipeline.gif" alt="DevOps CI/CD Moving Dot Pipeline" width="100%" />
 </div>
 
 ```mermaid
@@ -86,7 +86,7 @@ flowchart LR
 The diagram below illustrates the end-to-end runtime architecture: dual client WebSocket synchronization, Nginx reverse proxy load-balancing, Express REST API controllers, MongoDB persistence, and Cloudinary media CDN.
 
 <div align="center">
-  <img src="https://cdn.jsdelivr.net/gh/Mohammedsulayman123/full-stack_chatApp@main/assets/architecture-diagram.svg" alt="Real-Time Application Architecture Diagram" width="100%" />
+  <img src="assets/architecture-diagram.gif" alt="Real-Time Application Architecture Diagram" width="100%" />
 </div>
 
 ```mermaid
